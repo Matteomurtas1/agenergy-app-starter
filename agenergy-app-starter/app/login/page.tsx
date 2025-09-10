@@ -1,9 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { createBrowserSupabase } from '../../lib/supabaseBrowser'
+import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 
 export default function Login() {
-  const supabase = createBrowserSupabase()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(true)
@@ -14,8 +18,8 @@ export default function Login() {
     e.preventDefault()
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) { setError(error.message) }
-    else { window.location.href = '/app' }
+    if (error) setError(error.message)
+    else window.location.href = '/app'
     setLoading(false)
   }
 
